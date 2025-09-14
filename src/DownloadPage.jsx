@@ -1,6 +1,6 @@
 // src/DownloadPage.js
 import React, { useState, useEffect } from "react";
-import WebTorrent from "webtorrent";
+import { createWebTorrentClient } from "./utils/webtorrentLoader";
 
 function downloadBlob(blob, filename) {
     const url = URL.createObjectURL(blob);
@@ -18,20 +18,40 @@ export default function DownloadPage() {
     const [files, setFiles] = useState([]);
     const [progress, setProgress] = useState("");
     const [savingIndex, setSavingIndex] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
 
     useEffect(() => {
-        // Initialize WebTorrent client when component mounts
-        const webTorrentClient = new WebTorrent({
-            tracker: { wrtc: false } // Disable WebRTC to avoid connection issues
-        });
+        let mounted = true;
+        
+        const initializeClient = async () => {
+            try {
+                setLoading(true);
+                setError(null);
+                
+                const webTorrentClient = await createWebTorrentClient();
+                
+                if (mounted) {
+                    setClient(webTorrentClient);
+                    setLoading(false);
+                }
+            } catch (err) {
+                console.error("Failed to initialize WebTorrent client:", err);
+                if (mounted) {
+                    setError(err.message);
+                    setLoading(false);
+                }
+            }
+        };
 
-        setClient(webTorrentClient);
+        initializeClient();
 
         // Clean up when component unmounts
         return () => {
-            if (webTorrentClient) {
+            mounted = false;
+            if (client) {
                 try {
-                    webTorrentClient.destroy();
+                    client.destroy();
                 } catch (err) {
                     console.error("Error destroying WebTorrent client:", err);
                 }
@@ -60,6 +80,7 @@ export default function DownloadPage() {
 
             t.on("error", (err) => {
                 console.error("Torrent error:", err);
+                setProgress("Error: " + err.message);
             });
         } catch (error) {
             console.error("Error adding torrent:", error);
@@ -136,6 +157,27 @@ export default function DownloadPage() {
             setSavingIndex(null);
         }
     };
+
+    if (loading) {
+        return (
+            <div style={{ padding: 20 }}>
+                <h2>Download</h2>
+                <p>Loading WebTorrent client...</p>
+            </div>
+        );
+    }
+
+    if (error) {
+        return (
+            <div style={{ padding: 20 }}>
+                <h2>Download</h2>
+                <div style={{ color: 'red', marginBottom: '10px' }}>
+                    <strong>Error:</strong> {error}
+                </div>
+                <p>WebTorrent functionality is currently unavailable.</p>
+            </div>
+        );
+    }
 
     return (
         <div style={{ padding: 20 }}>

@@ -1,22 +1,46 @@
 import React, { useState, useEffect } from "react";
-import WebTorrent from "webtorrent";
+import { createWebTorrentClient } from "./utils/webtorrentLoader";
 
 function UploadPage() {
     const [client, setClient] = useState(null);
     const [magnetLink, setMagnetLink] = useState("");
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
 
     useEffect(() => {
-        // Initialize WebTorrent client when component mounts
-        const webTorrentClient = new WebTorrent({
-            tracker: { wrtc: false } // Disable WebRTC to avoid connection issues
-        });
+        let mounted = true;
+        
+        const initializeClient = async () => {
+            try {
+                setLoading(true);
+                setError(null);
+                
+                const webTorrentClient = await createWebTorrentClient();
+                
+                if (mounted) {
+                    setClient(webTorrentClient);
+                    setLoading(false);
+                }
+            } catch (err) {
+                console.error("Failed to initialize WebTorrent client:", err);
+                if (mounted) {
+                    setError(err.message);
+                    setLoading(false);
+                }
+            }
+        };
 
-        setClient(webTorrentClient);
+        initializeClient();
 
         // Clean up when component unmounts
         return () => {
-            if (webTorrentClient) {
-                webTorrentClient.destroy();
+            mounted = false;
+            if (client) {
+                try {
+                    client.destroy();
+                } catch (err) {
+                    console.error("Error destroying WebTorrent client:", err);
+                }
             }
         };
     }, []);
@@ -32,8 +56,30 @@ function UploadPage() {
             });
         } catch (error) {
             console.error("Error seeding file:", error);
+            setError("Failed to seed file: " + error.message);
         }
     };
+
+    if (loading) {
+        return (
+            <div>
+                <h2>Upload & Share</h2>
+                <p>Loading WebTorrent client...</p>
+            </div>
+        );
+    }
+
+    if (error) {
+        return (
+            <div>
+                <h2>Upload & Share</h2>
+                <div style={{ color: 'red', marginBottom: '10px' }}>
+                    <strong>Error:</strong> {error}
+                </div>
+                <p>WebTorrent functionality is currently unavailable.</p>
+            </div>
+        );
+    }
 
     return (
         <div>

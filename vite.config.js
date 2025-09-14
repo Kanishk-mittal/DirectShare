@@ -28,11 +28,14 @@ export default defineConfig({
         global: 'globalThis',
       },
     },
-    exclude: ['bittorrent-dht', 'bittorrent-tracker', 'webtorrent']
+    exclude: ['bittorrent-dht', 'bittorrent-tracker']
   },
   build: {
     rollupOptions: {
       external: ['bittorrent-dht', 'bittorrent-tracker']
     }
+  },
+  define: {
+    global: 'globalThis',
   }
 })
