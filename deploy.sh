@@ -66,4 +66,10 @@ git commit -m "Deploy to GitHub Pages"
 echo "Pushing to GitHub..."
 git push -u origin gh-pages --force
 
+# -------------------------------
+# Step 10: Done moving back to main
+# -------------------------------
+echo "Switching back to main branch..."
+git checkout main
+
 echo "✅ Deployment complete!"

@@ -9,6 +9,7 @@ export default defineConfig({
       protocolImports: true,
     }),
   ],
+  base: '/DirectShare/',
   resolve: {
     alias: {
       global: 'globalThis',
