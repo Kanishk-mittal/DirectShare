@@ -18,15 +18,15 @@ export default function DownloadPage() {
     const [files, setFiles] = useState([]);
     const [progress, setProgress] = useState("");
     const [savingIndex, setSavingIndex] = useState(null);
-    
+
     useEffect(() => {
         // Initialize WebTorrent client when component mounts
         const webTorrentClient = new WebTorrent({
             tracker: { wrtc: false } // Disable WebRTC to avoid connection issues
         });
-        
+
         setClient(webTorrentClient);
-        
+
         // Clean up when component unmounts
         return () => {
             if (webTorrentClient) {
@@ -41,7 +41,7 @@ export default function DownloadPage() {
 
     const handleDownload = () => {
         if (!magnetURI || !client) return;
-        
+
         try {
             // add the torrent (it will start downloading/seeding as peers appear)
             const t = client.add(magnetURI, (torrent) => {

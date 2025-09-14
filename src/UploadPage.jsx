@@ -4,15 +4,15 @@ import WebTorrent from "webtorrent";
 function UploadPage() {
     const [client, setClient] = useState(null);
     const [magnetLink, setMagnetLink] = useState("");
-    
+
     useEffect(() => {
         // Initialize WebTorrent client when component mounts
         const webTorrentClient = new WebTorrent({
             tracker: { wrtc: false } // Disable WebRTC to avoid connection issues
         });
-        
+
         setClient(webTorrentClient);
-        
+
         // Clean up when component unmounts
         return () => {
             if (webTorrentClient) {
