@@ -7,12 +7,19 @@ export default defineConfig({
     react(),
     nodePolyfills({
       protocolImports: true,
+      globals: {
+        Buffer: true,
+        process: true,
+        global: true
+      }
     }),
   ],
   base: '/DirectShare/',
   resolve: {
     alias: {
       global: 'globalThis',
+      stream: 'stream-browserify',
+      crypto: 'crypto-browserify'
     },
   },
   optimizeDeps: {
@@ -21,5 +28,11 @@ export default defineConfig({
         global: 'globalThis',
       },
     },
+    exclude: ['bittorrent-dht', 'bittorrent-tracker', 'webtorrent']
   },
+  build: {
+    rollupOptions: {
+      external: ['bittorrent-dht', 'bittorrent-tracker']
+    }
+  }
 })
