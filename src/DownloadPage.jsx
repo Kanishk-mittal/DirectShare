@@ -14,7 +14,6 @@ function downloadBlob(blob, filename) {
 export default function DownloadPage() {
     const [client, setClient] = useState(null);
     const [magnetURI, setMagnetURI] = useState("");
-    const [torrentObj, setTorrentObj] = useState(null);
     const [files, setFiles] = useState([]);
     const [progress, setProgress] = useState("");
     const [savingIndex, setSavingIndex] = useState(null);
@@ -57,7 +56,8 @@ export default function DownloadPage() {
                 }
             }
         };
-    }, []);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []); // Empty dependency array is correct here - we only want to initialize once
 
     const handleDownload = () => {
         if (!magnetURI || !client) return;
@@ -65,7 +65,6 @@ export default function DownloadPage() {
         try {
             // add the torrent (it will start downloading/seeding as peers appear)
             const t = client.add(magnetURI, (torrent) => {
-                setTorrentObj(torrent);
                 setFiles(torrent.files || []);
             });
 
@@ -123,7 +122,7 @@ export default function DownloadPage() {
                     const stream = file.createReadStream();
                     stream.on("data", (chunk) => {
                         // chunk might be Buffer, Uint8Array, or ArrayBuffer
-                        if (typeof Buffer !== "undefined" && Buffer.isBuffer(chunk)) {
+                        if (typeof window !== "undefined" && window.Buffer && window.Buffer.isBuffer && window.Buffer.isBuffer(chunk)) {
                             chunks.push(new Uint8Array(chunk));
                         } else if (chunk instanceof ArrayBuffer) {
                             chunks.push(new Uint8Array(chunk));

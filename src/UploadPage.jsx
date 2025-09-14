@@ -43,7 +43,8 @@ function UploadPage() {
                 }
             }
         };
-    }, []);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []); // Empty dependency array is correct here - we only want to initialize once
 
     const handleUpload = (e) => {
         const file = e.target.files[0];
