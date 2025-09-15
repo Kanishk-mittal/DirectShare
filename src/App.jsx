@@ -1,35 +1,40 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import React, { useState } from "react";
+import UploadPage from "./UploadPage";
+import DownloadPage from "./DownloadPage";
 
-function App() {
-  const [count, setCount] = useState(0)
+export default function App() {
+  const [activeTab, setActiveTab] = useState("download");
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
-}
+    <div style={{ padding: "20px" }}>
+      <h1>DirectShare - P2P File Sharing</h1>
 
-export default App
+      {/* Radio buttons for tab selection */}
+      <div style={{ marginBottom: "20px" }}>
+        <label style={{ marginRight: "20px" }}>
+          <input
+            type="radio"
+            value="download"
+            checked={activeTab === "download"}
+            onChange={(e) => setActiveTab(e.target.value)}
+            style={{ marginRight: "5px" }}
+          />
+          Download Files
+        </label>
+        <label>
+          <input
+            type="radio"
+            value="upload"
+            checked={activeTab === "upload"}
+            onChange={(e) => setActiveTab(e.target.value)}
+            style={{ marginRight: "5px" }}
+          />
+          Upload & Share Files
+        </label>
+      </div>
+
+      {/* Conditional rendering based on active tab */}
+      {activeTab === "download" ? <DownloadPage /> : <UploadPage />}
+    </div>
+  );
+}
