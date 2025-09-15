@@ -3,7 +3,7 @@ import React, { useState } from "react";
 function DownloadPage() {
     const [magnet, setMagnet] = useState("");
     const [progress, setProgress] = useState(0);
-    const [status, setStatus] = useState("");
+    const [status, setStatus] = useState("Idle");
     const [files, setFiles] = useState([]);
 
     // Create WebTorrent client only once
@@ -69,27 +69,36 @@ function DownloadPage() {
 
     return (
         <div>
-            <h2>WebTorrent File Downloader</h2>
+            <h2>Download Files</h2>
             <input
                 type="text"
                 value={magnet}
                 onChange={(e) => setMagnet(e.target.value)}
                 placeholder="Paste magnet link here"
-                size="80"
             />
             <button onClick={handleDownload}>Fetch Torrent</button>
-            <div>Status: {status}</div>
-            <div>Progress: {progress}%</div>
 
-            <h3>Files</h3>
-            <ul>
+            <div className="status-progress">
+                <div><strong>Status:</strong> {status}</div>
+                <div><strong>Progress:</strong> {progress}%</div>
+            </div>
+
+            <h3>Files in Torrent</h3>
+            <ul className="file-list">
                 {files.map((f) => (
-                    <li key={f.name}>
-                        {f.name} ({(f.size / (1024 * 1024)).toFixed(2)} MB){" "}
+                    <li key={f.name} className="file-item">
+                        <span className="file-info">
+                            {f.name}
+                            <span className="file-size">
+                                ({(f.size / (1024 * 1024)).toFixed(2)} MB)
+                            </span>
+                        </span>
                         {f.url ? (
-                            <a href={f.url} download={f.name}>Download</a>
+                            <a href={f.url} download={f.name} className="download-link">
+                                Download
+                            </a>
                         ) : (
-                            <button onClick={() => handleGetUrl(f.file)}>
+                            <button onClick={() => handleGetUrl(f.file)} className="get-url-btn">
                                 Get URL
                             </button>
                         )}

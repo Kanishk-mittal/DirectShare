@@ -26,7 +26,6 @@ function UploadPage() {
             console.log("Seeding:", torrent.infoHash);
             setMagnetLink(torrent.magnetURI);
         });
-
     };
 
     return (
@@ -36,7 +35,7 @@ function UploadPage() {
             {magnetLink && (
                 <div>
                     <p><strong>Magnet Link:</strong></p>
-                    <textarea value={magnetLink} readOnly rows="3" cols="80" />
+                    <textarea value={magnetLink} readOnly rows="4" />
                 </div>
             )}
         </div>
