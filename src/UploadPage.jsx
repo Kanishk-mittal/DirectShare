@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import WebTorrent from "webtorrent";
 
 const client = new window.WebTorrent({
     tracker: true,   // WebSocket trackers

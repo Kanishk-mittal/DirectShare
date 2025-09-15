@@ -12,8 +12,7 @@
   "dependencies": {
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
-    "vite-plugin-node-polyfills": "^0.24.0",
-    "webtorrent": "^2.8.4"
+    "vite-plugin-node-polyfills": "^0.24.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.33.0",
